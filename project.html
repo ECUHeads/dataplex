@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Dashboard: แผนการดำเนินงานโครงการ Google DataPlex</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals (Stone, Teal) -->
+    <!-- Application Structure Plan: A single-page dashboard design. The core is an interactive Gantt chart timeline linked to a detailed, filterable activity list. This structure was chosen to transform the static project plan into an explorable tool, allowing stakeholders to quickly grasp the project flow and view responsibilities by role, which is more usable than a linear document. -->
+    <!-- Visualization & Content Choices: Report Timeline -> Goal: Show change/Organize -> Viz: Interactive Gantt Chart (Chart.js) + Filterable Accordion List (HTML/JS) -> Interaction: Click chart to expand details, filter list by role -> Justification: Provides both a high-level visual overview and a detailed, customizable view. Report Deliverables -> Goal: Inform -> Viz: Card Grid (HTML/Tailwind) -> Justification: More scannable and visually engaging than a list. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .section-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1c1917; /* stone-900 */
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+        }
+        .kpi-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #0d9488; /* teal-600 */
+        }
+        .kpi-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #57534e; /* stone-600 */
+            margin-top: 0.5rem;
+        }
+        .accordion-header {
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .accordion-header.active {
+            background-color: #ccfbf1; /* teal-100 */
+        }
+         .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <header class="bg-white shadow-md py-6">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-stone-900">แผนการดำเนินงานโครงการ Google DataPlex</h1>
+            <p class="text-stone-600 mt-2">แดชบอร์ดสำหรับติดตามความคืบหน้าและสำรวจรายละเอียดโครงการ</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+        
+        <section id="overview" class="mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="kpi-card">
+                    <div class="kpi-value">17</div>
+                    <div class="kpi-label">ระยะเวลาทั้งหมด (สัปดาห์)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">5</div>
+                    <div class="kpi-label">เฟสหลักของโครงการ</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">9</div>
+                    <div class="kpi-label">ผลลัพธ์หลัก (Deliverables)</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="timeline" class="mb-12 bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="section-title">ไทม์ไลน์และกิจกรรมโครงการ</h2>
+            <p class="text-center text-stone-600 mb-6">ไทม์ไลน์ภาพรวมของโครงการในรูปแบบ Gantt Chart สามารถคลิกที่แท่งกราฟเพื่อดูรายละเอียดของแต่ละเฟสได้</p>
+            <div class="chart-container mb-8">
+                <canvas id="ganttChart"></canvas>
+            </div>
+            
+            <div class="flex justify-center mb-8">
+                <div class="w-full md:w-1/3">
+                    <label for="roleFilter" class="block text-sm font-medium text-stone-700 mb-2">กรองกิจกรรมตามผู้รับผิดชอบ:</label>
+                    <select id="roleFilter" class="w-full p-2 border border-stone-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                        <option value="All">แสดงทั้งหมด</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="activityDetails" class="space-y-4">
+            </div>
+        </section>
+
+        <section id="deliverables" class="mb-12">
+            <h2 class="section-title">รายการผลลัพธ์ของโครงการ (Deliverables)</h2>
+            <div id="deliverablesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-800 text-white py-4 mt-12">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>&copy; 2025 [ชื่อองค์กรของคุณ] - Project Implementation Dashboard</p>
+        </div>
+    </footer>
+
+    <script>
+        const projectData = {
+            roles: [
+                { id: 'PM', name: 'Project Manager' },
+                { id: 'DA', name: 'Data Architect' },
+                { id: 'DE', name: 'Data Engineer' },
+                { id: 'CE', name: 'Cloud Engineer' },
+                { id: 'BA', name: 'Business Analyst' },
+                { id: 'BU', name: 'Business User' }
+            ],
+            phases: [
+                {
+                    id: 'phase1',
+                    name: 'Phase 1: Preparation',
+                    duration: [0, 2],
+                    activities: [
+                        { name: 'ประชุมเปิดโครงการ (Kick-off Meeting)', outcome: 'ทุกฝ่ายเข้าใจเป้าหมายตรงกัน', persons: ['PM', 'DA', 'BA'] },
+                        { name: 'กำหนดขอบเขตและวัตถุประสงค์ (Define Scope & Objectives)', outcome: 'ได้รับการอนุมัติ Project Charter', persons: ['PM', 'DA', 'BA'] },
+                        { name: 'ระบุผู้มีส่วนได้ส่วนเสียและจัดตั้งทีม', outcome: 'ทีมงานพร้อมและเข้าใจบทบาท', persons: ['PM'] },
+                        { name: 'สำรวจและประเมิน Data Source เริ่มต้น', outcome: 'รายการ Data Source ที่จะนำเข้า', persons: ['DA', 'BA'] }
+                    ]
+                },
+                {
+                    id: 'phase2',
+                    name: 'Phase 2: Design',
+                    duration: [2, 5],
+                    activities: [
+                        { name: 'ออกแบบโครงสร้าง DataPlex (Lakes, Zones, Assets)', outcome: 'แบบแปลนทางเทคนิคที่ชัดเจน', persons: ['DA'] },
+                        { name: 'ออกแบบนโยบาย Data Governance (Security, Tagging, Access)', outcome: 'ได้ Data Governance Policy Framework', persons: ['DA'] },
+                        { name: 'ออกแบบสถาปัตยกรรมทางเทคนิค (VPC, IAM, Logging)', outcome: 'ได้ Architecture Design Document', persons: ['DA', 'CE'] },
+                        { name: 'ออกแบบ Data Pipeline (Ingestion & Transformation)', outcome: 'แผนผังการไหลของข้อมูล', persons: ['DA', 'DE'] }
+                    ]
+                },
+                {
+                    id: 'phase3',
+                    name: 'Phase 3: Development',
+                    duration: [5, 11],
+                    activities: [
+                        { name: 'ตั้งค่า GCP Project และ Environment (Dev/Test)', outcome: 'Environment พร้อมสำหรับการพัฒนา', persons: ['CE'] },
+                        { name: 'ติดตั้งและตั้งค่า DataPlex ตามแบบ', outcome: 'ระบบ DataPlex บน Dev/Test', persons: ['DE', 'CE'] },
+                        { name: 'พัฒนา Data Pipeline สำหรับนำเข้าและแปลงข้อมูล', outcome: 'Data Pipelines ที่ผ่านการทดสอบเบื้องต้น', persons: ['DE'] },
+                        { name: 'พัฒนาและติดตั้ง Data Quality Rules', outcome: 'กฎคุณภาพข้อมูลในระบบ', persons: ['DE'] },
+                        { name: 'ทำ Unit Test และ Integration Test', outcome: 'IaC Scripts ที่ใช้งานได้', persons: ['DE', 'CE'] }
+                    ]
+                },
+                {
+                    id: 'phase4',
+                    name: 'Phase 4: Deployment',
+                    duration: [11, 13],
+                    activities: [
+                        { name: 'เตรียม Production Environment', outcome: 'Environment พร้อมสำหรับ Go-Live', persons: ['CE'] },
+                        { name: 'ทำ User Acceptance Testing (UAT) กับ Business User', outcome: 'UAT Sign-off จากผู้ใช้', persons: ['BA', 'BU', 'DE'] },
+                        { name: 'Deploy ระบบและ Pipeline ขึ้น Production', outcome: 'ระบบบน Production พร้อมใช้งาน', persons: ['DE', 'CE'] },
+                        { name: 'โอนย้ายข้อมูลเริ่มต้น (Initial Data Load)', outcome: 'ข้อมูลชุดแรกในระบบ', persons: ['DE'] },
+                        { name: 'จัดอบรมการใช้งาน (User Training) และส่งมอบทีม Operations', outcome: 'Training Materials & Runbook', persons: ['PM', 'BA'] }
+                    ]
+                },
+                {
+                    id: 'phase5',
+                    name: 'Phase 5: Post-Production',
+                    duration: [13, 17],
+                    activities: [
+                        { name: 'Hypercare Support (ดูแลระบบอย่างใกล้ชิด)', outcome: 'แก้ไขปัญหาเร่งด่วนหลัง Go-Live', persons: ['DE', 'CE'] },
+                        { name: 'ตรวจสอบและติดตามการทำงานของระบบ (Monitoring)', outcome: 'ระบบทำงานได้อย่างมีเสถียรภาพ', persons: ['DE', 'CE'] },
+                        { name: 'แก้ไขปัญหาและปรับปรุงประสิทธิภาพ', outcome: 'ระบบได้รับการปรับปรุงต่อเนื่อง', persons: ['DE', 'CE'] },
+                        { name: 'ประชุมสรุปโครงการ (Project Closure & Lessons Learned)', outcome: 'ได้ Post-Mortem Report', persons: ['PM'] }
+                    ]
+                }
+            ],
+            deliverables: [
+                { name: 'Project Charter', phase: 1 },
+                { name: 'Architecture Design Document', phase: 2 },
+                { name: 'Data Governance Policy Framework', phase: 2 },
+                { name: 'Infrastructure as Code (IaC) Scripts', phase: 3 },
+                { name: 'Configured DataPlex Environment', phase: 3 },
+                { name: 'Data Ingestion & Transformation Pipelines', phase: 3 },
+                { name: 'User Acceptance Test (UAT) Sign-off', phase: 4 },
+                { name: 'Training Materials & Operations Runbook', phase: 4 },
+                { name: 'Post-Mortem Report', phase: 5 }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ganttCtx = document.getElementById('ganttChart').getContext('2d');
+            const roleFilter = document.getElementById('roleFilter');
+            const activityDetailsContainer = document.getElementById('activityDetails');
+            const deliverablesGrid = document.getElementById('deliverablesGrid');
+            let ganttChart;
+
+            function getRoleName(id) {
+                const role = projectData.roles.find(r => r.id === id);
+                return role ? role.name : id;
+            }
+            
+            function populateRolesFilter() {
+                projectData.roles.forEach(role => {
+                    const option = document.createElement('option');
+                    option.value = role.id;
+                    option.textContent = `${role.name} (${role.id})`;
+                    roleFilter.appendChild(option);
+                });
+            }
+
+            function createActivityDetails() {
+                activityDetailsContainer.innerHTML = '';
+                projectData.phases.forEach(phase => {
+                    const phaseElement = document.createElement('div');
+                    phaseElement.className = 'border border-stone-200 rounded-lg overflow-hidden';
+                    phaseElement.id = phase.id;
+
+                    const header = document.createElement('div');
+                    header.className = 'accordion-header bg-stone-100 p-4 flex justify-between items-center';
+                    header.innerHTML = `
+                        <h3 class="font-bold text-lg text-stone-800">${phase.name}</h3>
+                        <span class="transform transition-transform duration-300">
+                            <svg class="w-6 h-6 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </span>
+                    `;
+
+                    const content = document.createElement('div');
+                    content.className = 'accordion-content bg-white';
+                    
+                    const tableContainer = document.createElement('div');
+                    tableContainer.className = 'p-4 overflow-x-auto';
+                    
+                    const table = document.createElement('table');
+                    table.className = 'min-w-full divide-y divide-stone-200';
+                    table.innerHTML = `
+                        <thead class="bg-stone-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">กิจกรรม</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">ผลลัพธ์</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">ผู้รับผิดชอบ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-stone-200">
+                        </tbody>
+                    `;
+
+                    const tbody = table.querySelector('tbody');
+                    phase.activities.forEach(activity => {
+                        const row = document.createElement('tr');
+                        row.dataset.roles = activity.persons.join(',');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-900">${activity.name}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500">${activity.outcome}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500">${activity.persons.join(', ')}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                    
+                    tableContainer.appendChild(table);
+                    content.appendChild(tableContainer);
+                    phaseElement.appendChild(header);
+                    phaseElement.appendChild(content);
+                    activityDetailsContainer.appendChild(phaseElement);
+
+                    header.addEventListener('click', () => {
+                        toggleAccordion(phaseElement);
+                    });
+                });
+            }
+            
+            function toggleAccordion(phaseElement, forceOpen = false) {
+                const content = phaseElement.querySelector('.accordion-content');
+                const header = phaseElement.querySelector('.accordion-header');
+                const icon = header.querySelector('svg');
+
+                const isActive = header.classList.contains('active');
+
+                if (forceOpen && !isActive) {
+                    header.classList.add('active');
+                    icon.style.transform = 'rotate(180deg)';
+                    content.style.maxHeight = content.scrollHeight + "px";
+                } else if (!forceOpen && isActive) {
+                     header.classList.remove('active');
+                     icon.style.transform = 'rotate(0deg)';
+                     content.style.maxHeight = '0';
+                } else if (!forceOpen && !isActive) {
+                    // Close all others
+                    document.querySelectorAll('.accordion-header.active').forEach(activeHeader => {
+                        const activePhaseElement = activeHeader.parentElement;
+                        if (activePhaseElement !== phaseElement) {
+                           toggleAccordion(activePhaseElement);
+                        }
+                    });
+                    // Open current
+                    header.classList.add('active');
+                    icon.style.transform = 'rotate(180deg)';
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            }
+
+            function populateDeliverables() {
+                projectData.deliverables.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between';
+                    card.innerHTML = `
+                        <div>
+                            <h4 class="text-lg font-bold text-teal-700">${item.name}</h4>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-stone-600 bg-stone-200">
+                                Phase ${item.phase}
+                            </span>
+                        </div>
+                    `;
+                    deliverablesGrid.appendChild(card);
+                });
+            }
+
+            function renderGanttChart() {
+                const phaseNames = projectData.phases.map(p => p.name);
+                const phaseDurations = projectData.phases.map(p => p.duration);
+
+                if (ganttChart) {
+                    ganttChart.destroy();
+                }
+
+                ganttChart = new Chart(ganttCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: phaseNames,
+                        datasets: [{
+                            label: 'ระยะเวลา (สัปดาห์)',
+                            data: phaseDurations,
+                            backgroundColor: 'rgba(13, 148, 136, 0.6)', // teal-600 with opacity
+                            borderColor: 'rgba(13, 148, 136, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            borderSkipped: false,
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'สัปดาห์ที่'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const start = context.raw[0];
+                                        const end = context.raw[1];
+                                        return `สัปดาห์ที่ ${start + 1} - ${end}`;
+                                    }
+                                }
+                            }
+                        },
+                        onClick: (event, elements) => {
+                            if (elements.length > 0) {
+                                const phaseIndex = elements[0].index;
+                                const phaseId = projectData.phases[phaseIndex].id;
+                                const phaseElement = document.getElementById(phaseId);
+                                if (phaseElement) {
+                                    phaseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    setTimeout(() => toggleAccordion(phaseElement, true), 500);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            roleFilter.addEventListener('change', (e) => {
+                const selectedRole = e.target.value;
+                document.querySelectorAll('#activityDetails tbody tr').forEach(row => {
+                    const roles = row.dataset.roles.split(',');
+                    if (selectedRole === 'All' || roles.includes(selectedRole)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+
+            populateRolesFilter();
+            createActivityDetails();
+            populateDeliverables();
+            renderGanttChart();
+        });
+    </script>
+</body>
+</html>
