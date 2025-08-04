@@ -15,6 +15,7 @@
         - Project Overview -> Goal: Inform -> Viz: Key Stat Cards (HTML/Tailwind) -> Interaction: None -> Justification: Provides quick, scannable metrics about the project's scope.
         - Project Stakeholders -> Goal: Inform/Organize -> Viz: Structured Table (HTML/Tailwind) -> Interaction: None -> Justification: Clearly lists key roles and their responsibilities, providing context about the team involved.
         - Project Timeline -> Goal: Organize/Change -> Viz: Interactive Gantt Chart (Chart.js Canvas) -> Interaction: None (all details below) -> Justification: Visually represents the project schedule and dependencies, making it easy to understand the sequence and duration. Start pins provide clear visual markers for each step's beginning.
+        - Project Deliverables Summary -> Goal: Inform/Organize -> Viz: Structured Table (HTML/Tailwind) -> Interaction: None -> Justification: Provides a dedicated, clear summary of all project deliverables, their types, and the activities producing them, enhancing clarity.
         - Phase Details -> Goal: Inform/Organize -> Viz: Structured Tables (HTML/Tailwind) -> Interaction: Always visible -> Justification: Presents detailed, structured information in a clear and readable format, allowing users to scroll and review all steps without additional clicks.
         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -118,6 +119,15 @@
                 </div>
             </section>
 
+            <!-- Project Deliverables Summary Section -->
+            <section class="bg-white p-4 md:p-6 rounded-lg shadow-lg mb-8">
+                <h2 class="text-2xl font-bold mb-4 text-center">Project Deliverables Summary</h2>
+                <p class="mb-4 text-stone-600 text-center">This table provides a comprehensive list of all project deliverables, their descriptions, the activities they stem from, their specific types, and their **importance** to the project.</p>
+                <div id="deliverables-summary-table-container" class="overflow-x-auto">
+                    <!-- Deliverables summary table will be rendered here by JS -->
+                </div>
+            </section>
+
             <!-- Timeline Chart Section -->
             <section class="bg-white p-4 md:p-6 rounded-lg shadow-lg mb-8">
                 <h2 class="text-2xl font-bold mb-4 text-center">Project Overview Timeline</h2>
@@ -126,7 +136,7 @@
                 </div>
             </section>
 
-            <!-- Phase Details Section -->
+            <!-- Detailed Project Steps Section -->
             <section id="phase-details-container">
                 <!-- All step details will be rendered here in one table -->
             </section>
@@ -144,10 +154,27 @@
                     color: 'rgba(56, 189, 248, 0.7)', // sky-400
                     borderColor: 'rgba(2, 132, 199, 1)', // sky-600
                     activities: [
-                        { name: "1.1 Project Kick-off & Stakeholder Alignment", owner: "Project Manager (PM)", duration: "1 Day", deliverables: "- Project Charter/Scope Document (MVP Focus)<br>- Stakeholder List<br>- Communication Plan" },
-                        { name: "1.2 Current State Assessment", owner: "Cloud Engineer (CE), Data Engineer (DE)", duration: "2 Days", deliverables: "- Current State Architecture Diagram (High-Level)<br>- BigQuery Entities Inventory (Summary)<br>- Gap Analysis Report (Key Gaps)<br>- Identified Core Use Cases" },
-                        { name: "1.3 Requirements Gathering", owner: "Data Governance Lead (DGL), PM, Business Stakeholders (BS)", duration: "1 Day", deliverables: "- Prioritized Requirements (MVP)<br>- Core Metadata Attributes List" },
-                        { name: "1.4 High-Level Architecture Design & Planning", owner: "Cloud Engineer (CE)", duration: "1 Day", deliverables: "- High-Level Dataplex Architecture Diagram<br>- IAM Strategy (Key Roles)<br>- High-Level Project Plan (45-day)<br>- Resource Estimation (Lean)" }
+                        { name: "1.1 Project Kick-off & Stakeholder Alignment", owner: "Project Manager (PM)", duration: "1 Day", deliverables: [
+                            { name: "Project Charter/Scope (MVP Focus)", description: "Defines project goals, scope, and key deliverables for the MVP.", type: "Document", importance: "Mandatory", category: "Planning" },
+                            { name: "Stakeholder List", description: "Identifies all key project stakeholders and their roles.", type: "List", importance: "Mandatory", category: "Planning" },
+                            { name: "Communication Plan", description: "Outlines how project information will be shared among stakeholders.", type: "Document", importance: "Recommended", category: "Planning" }
+                        ]},
+                        { name: "1.2 Current State Assessment", owner: "Cloud Engineer (CE), Data Engineer (DE)", duration: "2 Days", deliverables: [
+                            { name: "Current State Architecture Diagram (High-Level)", description: "Visual representation of existing data architecture.", type: "Diagram", importance: "Mandatory", category: "Assessment" },
+                            { name: "BigQuery Entities Inventory (Summary)", description: "Summary list of all 60 BigQuery tables and their basic attributes.", type: "List", importance: "Mandatory", category: "Assessment" },
+                            { name: "Gap Analysis Report (Key Gaps)", description: "Identifies missing metadata, governance, and process gaps.", type: "Report", importance: "Mandatory", category: "Assessment" },
+                            { name: "Identified Core Use Cases", description: "List of primary business problems Dataplex will address.", type: "List", importance: "Recommended", category: "Assessment" }
+                        ]},
+                        { name: "1.3 Requirements Gathering", owner: "Data Governance Lead (DGL), PM, Business Stakeholders (BS)", duration: "1 Day", deliverables: [
+                            { name: "Prioritized Requirements (MVP)", description: "Detailed document of essential project requirements for MVP.", type: "Document", importance: "Mandatory", category: "Planning" },
+                            { name: "Core Metadata Attributes", description: "List of critical metadata fields to be captured (e.g., owner, sensitivity, refresh freq).", type: "List", importance: "Mandatory", category: "Planning" }
+                        ]},
+                        { name: "1.4 High-Level Architecture Design & Planning", owner: "Cloud Engineer (CE)", duration: "1 Day", deliverables: [
+                            { name: "High-Level Dataplex Architecture", description: "Overall design of Dataplex lakes, zones, and asset integration.", type: "Diagram", importance: "Mandatory", category: "Design" },
+                            { name: "IAM Strategy (Key Roles)", description: "Defines key Identity and Access Management roles and permissions.", type: "Document", importance: "Mandatory", category: "Design" },
+                            { name: "High-Level Project Plan (45-Day)", description: "Summary project plan outlining steps and timelines.", type: "Document", importance: "Mandatory", category: "Planning" },
+                            { name: "Resource Estimation (Lean)", description: "Estimate of required resources (human, cloud services) for the project.", type: "Report", importance: "Recommended", category: "Planning" }
+                        ]}
                     ]
                 },
                 {
@@ -157,12 +184,33 @@
                     color: 'rgba(251, 191, 36, 0.7)', // amber-400
                     borderColor: 'rgba(217, 119, 6, 1)', // amber-600
                     activities: [
-                        { name: "2.1 Detailed Dataplex Lake & Zone Design", owner: "Cloud Engineer (CE)", duration: "2 Days", deliverables: "- Detailed Dataplex Lake & Zone Design Document<br>- Asset Mapping Strategy" },
-                        { name: "2.2 Asset Onboarding Strategy", owner: "Data Engineer (DE)", duration: "1 Day", deliverables: "- Asset Onboarding Plan<br>- Data Source Connection Specifications" },
-                        { name: "2.3 Metadata Management & Tagging", owner: "Data Governance Lead (DGL), Cloud Engineer (CE)", duration: "4 Days", deliverables: "- Defined Core Tag Templates<br>- Initial Business Glossary (Key Terms)<br>- Metadata Collection Strategy<br>- Metadata Governance Guidelines (Basic)" },
-                        { name: "2.4 Data Governance & Security Policy Definition", owner: "Data Governance Lead (DGL), Cloud Security Engineer (CSE)", duration: "1 Day", deliverables: "- Data Governance Policy Document (MVP)<br>- IAM Role Matrix (Core Roles)" },
-                        { name: "2.5 Data Quality Rules & Profiling", owner: "Data Engineer (DE), Data Governance Lead (DGL)", duration: "1 Day", deliverables: "- Data Quality Rule Definitions (Critical)<br>- Data Profiling Plan<br>- Alerting Strategy (Basic)" },
-                        { name: "2.6 Data Lineage & Observability", owner: "Cloud Engineer (CE), Data Engineer (DE)", duration: "1 Day", deliverables: "- Data Lineage Strategy (High-Level)<br>- Observability Metrics (Key Metrics)" }
+                        { name: "2.1 Detailed Dataplex Lake & Zone Design", owner: "Cloud Engineer (CE)", duration: "2 Days", deliverables: [
+                            { name: "Detailed Dataplex Lake & Zone Design", description: "Specific design for Dataplex lakes and zones, including naming conventions.", type: "Document", importance: "Mandatory", category: "Design" },
+                            { name: "Asset Mapping Strategy", description: "Plan for mapping BigQuery entities to Dataplex zones.", type: "Document", importance: "Mandatory", category: "Design" }
+                        ]},
+                        { name: "2.2 Asset Onboarding Strategy", owner: "Data Engineer (DE)", duration: "1 Day", deliverables: [
+                            { name: "Asset Onboarding Plan", description: "Step-by-step plan for bringing BigQuery tables into Dataplex as assets.", type: "Document", importance: "Mandatory", category: "Design" },
+                            { name: "Data Source Connection Specifications", description: "Technical details for connecting Dataplex to BigQuery.", type: "Document", importance: "Mandatory", category: "Design" }
+                        ]},
+                        { name: "2.3 Metadata Management & Tagging", owner: "Data Governance Lead (DGL), Cloud Engineer (CE)", duration: "4 Days", deliverables: [
+                            { name: "Defined Core Tag Templates", description: "Custom templates for organizing metadata (e.g., domain, owner, sensitivity).", type: "Configuration", importance: "Mandatory", category: "Configuration" },
+                            { name: "Initial Business Glossary (Key Terms)", description: "A starter list of business terms and their definitions.", type: "Glossary", importance: "Mandatory", category: "Configuration" },
+                            { name: "Metadata Collection Strategy", description: "Plan for gathering and populating metadata (automated/manual).", type: "Document", importance: "Mandatory", category: "Configuration" },
+                            { name: "Metadata Governance Guidelines (Basic)", description: "Fundamental rules for managing and maintaining metadata quality.", type: "Document", importance: "Recommended", category: "Governance" }
+                        ]},
+                        { name: "2.4 Data Governance & Security Policy Definition", owner: "Data Governance Lead (DGL), Cloud Security Engineer (CSE)", duration: "1 Day", deliverables: [
+                            { name: "Data Governance Policy (MVP)", description: "Core policies for data access, usage, and compliance for MVP scope.", type: "Document", importance: "Mandatory", category: "Governance" },
+                            { name: "IAM Role Matrix (Core Roles)", description: "Table outlining specific IAM roles and permissions for project team members.", type: "List", importance: "Mandatory", category: "Governance" }
+                        ]},
+                        { name: "2.5 Data Quality Rules & Profiling", owner: "Data Engineer (DE), Data Governance Lead (DGL)", duration: "1 Day", deliverables: [
+                            { name: "Data Quality Rule Definitions (Critical)", description: "Specific rules for validating data accuracy and consistency.", type: "Document", importance: "Mandatory", category: "Data Quality" },
+                            { name: "Data Profiling Plan", description: "Plan for analyzing data characteristics and identifying anomalies.", type: "Document", importance: "Recommended", category: "Data Quality" },
+                            { name: "Alerting Strategy (Basic)", description: "Defines how and when data quality issues will be reported.", type: "Document", importance: "Recommended", category: "Data Quality" }
+                        ]},
+                        { name: "2.6 Data Lineage & Observability", owner: "Cloud Engineer (CE), Data Engineer (DE)", duration: "1 Day", deliverables: [
+                            { name: "Data Lineage Strategy (High-Level)", description: "Plan for tracking data flow from source to consumption.", type: "Document", importance: "Recommended", category: "Data Governance" },
+                            { name: "Observability Metrics (Key Metrics)", description: "Key performance indicators for monitoring data systems and pipelines.", type: "List", importance: "Recommended", category: "Monitoring" }
+                        ]}
                     ]
                 },
                 {
@@ -172,12 +220,33 @@
                     color: 'rgba(52, 211, 153, 0.7)', // emerald-400
                     borderColor: 'rgba(5, 150, 105, 1)', // emerald-600
                     activities: [
-                        { name: "3.1 Dataplex Environment Setup", owner: "Data Engineer (DE), Cloud Security Engineer (CSE)", duration: "1 Day", deliverables: "- Configured GCP Project<br>- Deployed Dataplex Lakes & Zones<br>- Service Accounts Setup" },
-                        { name: "3.2 Asset Onboarding", owner: "Data Engineer (DE)", duration: "2 Days", deliverables: "- 60 BigQuery Tables Onboarded<br>- Verified Asset Connections" },
-                        { name: "3.3 Metadata Enrichment & Cataloging", owner: "Data Governance Lead (DGL), Data Engineer (DE)", duration: "12 Days", deliverables: "- Populated Dataplex Data Catalog (MVP)<br>- Implemented Business Glossary (Key Terms)" },
-                        { name: "3.4 Data Quality Implementation", owner: "Data Engineer (DE)", duration: "2 Days", deliverables: "- Deployed Data Quality Scans (Critical)<br>- Configured Alerting Mechanisms" },
-                        { name: "3.5 Security & Access Control Configuration", owner: "Cloud Security Engineer (CSE), Data Governance Lead (DGL)", duration: "1 Day", deliverables: "- Implemented IAM Policies" },
-                        { name: "3.6 Data Exploration & Consumption Setup", owner: "Data Engineer (DE), Data Analyst/Scientist (DA/DS)", duration: "2 Days", deliverables: "- Configured Dataplex Exploration Environment<br>- Tested BigQuery Access via Dataplex" }
+                        { name: "3.1 Dataplex Environment Setup", owner: "Data Engineer (DE), Cloud Security Engineer (CSE)", duration: "1 Day", deliverables: [
+                            { name: "Configured GCP Project", description: "GCP project configured with necessary APIs and services.", type: "Configuration", importance: "Mandatory", category: "Implementation" },
+                            { name: "Deployed Dataplex Lakes & Zones", description: "Dataplex lakes and zones provisioned in GCP.", type: "Configuration", importance: "Mandatory", category: "Implementation" },
+                            { name: "Service Accounts Setup", description: "Service accounts created and permissions assigned.", type: "Configuration", importance: "Mandatory", category: "Implementation" }
+                        ]},
+                        { name: "3.2 Asset Onboarding", owner: "Data Engineer (DE)", duration: "2 Days", deliverables: [
+                            { name: "60 BigQuery Tables Onboarded (Dataplex Assets)", description: "All 60 BigQuery tables registered as assets in Dataplex.", type: "Configuration", importance: "Mandatory", category: "Implementation" },
+                            { name: "Verified Asset Connections", description: "Confirmation that Dataplex can successfully connect to all BigQuery assets.", type: "Report", importance: "Mandatory", category: "Implementation" }
+                        ]},
+                        { name: "3.3 Metadata Enrichment & Cataloging", owner: "Data Governance Lead (DGL), Data Engineer (DE)", duration: "12 Days", deliverables: [
+                            { name: "Populated Dataplex Data Catalog (MVP)", description: "Dataplex Data Catalog filled with essential metadata for 60 entities.", type: "Configuration", importance: "Mandatory", category: "Implementation" },
+                            { name: "Implemented Business Glossary (Key Terms)", description: "Key business terms integrated into Dataplex for consistent understanding.", type: "Configuration", importance: "Mandatory", category: "Implementation" },
+                            { name: "Automated Metadata Extraction Scripts (If Applicable)", description: "Scripts developed to automatically extract and load metadata.", type: "Script/Code", importance: "Recommended", category: "Implementation" }
+                        ]},
+                        { name: "3.4 Data Quality Implementation", owner: "Data Engineer (DE)", duration: "2 Days", deliverables: [
+                            { name: "Deployed Data Quality Scans (Critical)", description: "Automated data quality checks running on critical BigQuery tables.", type: "Configuration", importance: "Mandatory", category: "Implementation" },
+                            { name: "Configured Alerting Mechanisms", description: "Alerts set up for data quality failures.", type: "Configuration", importance: "Recommended", category: "Implementation" },
+                            { name: "Initial Data Quality Report", description: "First report on the quality status of onboarded data.", type: "Report", importance: "Recommended", category: "Reporting" }
+                        ]},
+                        { name: "3.5 Security & Access Control Configuration", owner: "Cloud Security Engineer (CSE), Data Governance Lead (DGL)", duration: "1 Day", deliverables: [
+                            { name: "Implemented IAM Policies", description: "Access policies applied to Dataplex and BigQuery resources.", type: "Configuration", importance: "Mandatory", category: "Security" },
+                            { name: "Configured Dataplex Policy Tags (If Applicable)", description: "Policy tags set up for column-level security in BigQuery.", type: "Configuration", importance: "Recommended", category: "Security" }
+                        ]},
+                        { name: "3.6 Data Exploration & Consumption Setup", owner: "Data Engineer (DE), Data Analyst/Scientist (DA/DS)", duration: "2 Days", deliverables: [
+                            { name: "Configured Dataplex Exploration Environment", description: "Dataplex notebooks and Spark environments set up for data exploration.", type: "Configuration", importance: "Recommended", category: "Implementation" },
+                            { name: "Tested BigQuery Access via Dataplex", description: "Verification that users can query BigQuery data through Dataplex.", type: "Report", importance: "Mandatory", category: "Testing" }
+                        ]}
                     ]
                 },
                 {
@@ -187,10 +256,23 @@
                     color: 'rgba(167, 139, 250, 0.7)', // violet-400
                     borderColor: 'rgba(124, 58, 237, 1)', // violet-600
                     activities: [
-                        { name: "4.1 Functional Testing", owner: "Data Analyst/Scientist (DA/DS), Data Engineer (DE)", duration: "2 Days", deliverables: "- Test Cases & Results (Core Features)<br>- Bug Report (Critical Bugs)" },
-                        { name: "4.2 Performance Testing", owner: "Data Engineer (DE)", duration: "1 Day", deliverables: "- Performance Test Report (Key Metrics)<br>- Optimization Recommendations (Urgent)" },
-                        { name: "4.3 User Acceptance Testing (UAT)", owner: "Business Stakeholders (BS), Data Governance Lead (DGL)", duration: "1 Day", deliverables: "- UAT Sign-off (MVP Scope)<br>- Feedback Log & Action Plan (Prioritized)" },
-                        { name: "4.4 Documentation", owner: "Project Manager (PM), Cloud Engineer (CE), Data Engineer (DE)", duration: "1 Day", deliverables: "- User Guide (Basic)<br>- Admin Guide (Basic)<br>- Architecture Documentation (High-Level)" }
+                        { name: "4.1 Functional Testing", owner: "Data Analyst/Scientist (DA/DS), Data Engineer (DE)", duration: "2 Days", deliverables: [
+                            { name: "Test Cases & Results (Core Features)", description: "Documentation of tests performed on core Dataplex features and their outcomes.", type: "Document", importance: "Mandatory", category: "Testing" },
+                            { name: "Bug Report (Critical Bugs)", description: "Report detailing any critical issues found during testing.", type: "Report", importance: "Mandatory", category: "Testing" }
+                        ]},
+                        { name: "4.2 Performance Testing", owner: "Data Engineer (DE)", duration: "1 Day", deliverables: [
+                            { name: "Performance Test Report (Key Metrics)", description: "Report on system performance, focusing on key metrics like query speed and data load times.", type: "Report", importance: "Recommended", category: "Testing" },
+                            { name: "Optimization Recommendations (Urgent)", description: "List of immediate improvements needed for performance.", type: "Document", importance: "Recommended", category: "Optimization" }
+                        ]},
+                        { name: "4.3 User Acceptance Testing (UAT)", owner: "Business Stakeholders (BS), Data Governance Lead (DGL)", duration: "1 Day", deliverables: [
+                            { name: "UAT Sign-off (MVP Scope)", description: "Formal approval from business users for the MVP features.", type: "Sign-off", importance: "Mandatory", category: "Testing" },
+                            { name: "Feedback Log & Action Plan (Prioritized)", description: "Record of user feedback and plan for addressing it.", type: "Log", importance: "Recommended", category: "Feedback" }
+                        ]},
+                        { name: "4.4 Documentation", owner: "Project Manager (PM), Cloud Engineer (CE), Data Engineer (DE)", duration: "1 Day", deliverables: [
+                            { name: "User Guide (Basic)", description: "Simple guide for end-users on how to use Dataplex for data discovery.", type: "Document", importance: "Mandatory", category: "Documentation" },
+                            { name: "Admin Guide (Basic)", description: "Basic guide for administrators on managing the Dataplex environment.", type: "Document", importance: "Recommended", category: "Documentation" },
+                            { name: "Architecture Documentation (High-Level)", description: "High-level overview of the implemented Dataplex architecture.", type: "Document", importance: "Recommended", category: "Documentation" }
+                        ]}
                     ]
                 },
                 {
@@ -200,9 +282,18 @@
                     color: 'rgba(251, 113, 133, 0.7)', // rose-400
                     borderColor: 'rgba(225, 29, 72, 1)', // rose-600
                     activities: [
-                        { name: "5.1 Production Deployment", owner: "Data Engineer (DE), Cloud Security Engineer (CSE)", duration: "2 Days", deliverables: "- Production Dataplex Environment<br>- Deployed Metadata & Governance Policies" },
-                        { name: "5.2 User Training", owner: "Data Governance Lead (DGL), Project Manager (PM)", duration: "2 Days", deliverables: "- Training Materials (Essential)<br>- Conducted Training Sessions" },
-                        { name: "5.3 Post-Launch Monitoring", owner: "Data Engineer (DE), Data Governance Lead (DGL)", duration: "1 Day", deliverables: "- Monitoring Dashboards (Initial)<br>- Initial Monitoring Report" }
+                        { name: "5.1 Production Deployment", owner: "Data Engineer (DE), Cloud Security Engineer (CSE)", duration: "2 Days", deliverables: [
+                            { name: "Production Dataplex Environment", description: "Dataplex environment deployed and operational in production.", type: "Configuration", importance: "Mandatory", category: "Deployment" },
+                            { name: "Deployed Metadata & Governance Policies", description: "All finalized metadata and governance policies applied in production.", type: "Configuration", importance: "Mandatory", category: "Deployment" }
+                        ]},
+                        { name: "5.2 User Training", owner: "Data Governance Lead (DGL), Project Manager (PM)", duration: "2 Days", deliverables: [
+                            { name: "Training Materials (Essential)", description: "Key materials for training users on Dataplex usage.", type: "Materials", importance: "Mandatory", category: "Training" },
+                            { name: "Conducted Training Sessions", description: "Record of completed user training sessions.", type: "Report", importance: "Recommended", category: "Training" }
+                        ]},
+                        { name: "5.3 Post-Launch Monitoring", owner: "Data Engineer (DE), Data Governance Lead (DGL)", duration: "1 Day", deliverables: [
+                            { name: "Monitoring Dashboards (Initial)", description: "Initial dashboards for tracking Dataplex performance and data quality.", type: "Dashboard", importance: "Mandatory", category: "Monitoring" },
+                            { name: "Initial Monitoring Report", description: "First report on post-launch system health and data quality.", type: "Report", importance: "Recommended", category: "Reporting" }
+                        ]}
                     ]
                 },
                  {
@@ -212,16 +303,27 @@
                     color: 'rgba(156, 163, 175, 0.7)', // gray-400
                     borderColor: 'rgba(75, 85, 99, 1)', // gray-600
                     activities: [
-                        { name: "6.1 Metadata Enrichment & Maintenance", owner: "Data Governance Lead (DGL), Data Engineer (DE)", duration: "Ongoing", deliverables: "- Regular Metadata Audit Reports<br>- Updated Metadata" },
-                        { name: "6.2 New Entity Onboarding", owner: "Data Engineer (DE), Data Governance Lead (DGL)", duration: "Ongoing", deliverables: "- Onboarded New Entities with Metadata" },
-                        { name: "6.3 Feature Adoption", owner: "Cloud Engineer (CE), Data Governance Lead (DGL)", duration: "Ongoing", deliverables: "- Feature Evaluation Reports<br>- Implementation Plans" },
-                        { name: "6.4 Policy Review & Updates", owner: "Data Governance Lead (DGL)", duration: "Ongoing", deliverables: "- Reviewed & Updated Policies" }
+                        { name: "6.1 Metadata Enrichment & Maintenance", owner: "Data Governance Lead (DGL), Data Engineer (DE)", duration: "Ongoing", deliverables: [
+                            { name: "Regular Metadata Audit Reports", description: "Reports from periodic reviews of metadata accuracy and completeness.", type: "Report", importance: "Recommended", category: "Ongoing Governance" },
+                            { name: "Updated Metadata", description: "Metadata records that have been revised or enhanced.", type: "Configuration", importance: "Recommended", category: "Ongoing Governance" }
+                        ]},
+                        { name: "6.2 New Entity Onboarding", owner: "Data Engineer (DE), Data Governance Lead (DGL)", duration: "Ongoing", deliverables: [
+                            { name: "Onboarded New Entities with Metadata", description: "New BigQuery tables successfully integrated into Dataplex with associated metadata.", type: "Configuration", importance: "Recommended", category: "Expansion" }
+                        ]},
+                        { name: "6.3 Feature Adoption", owner: "Cloud Engineer (CE), Data Governance Lead (DGL)", duration: "Ongoing", deliverables: [
+                            { name: "Feature Evaluation Reports", description: "Reports assessing the value and feasibility of new Dataplex features.", type: "Report", importance: "Optional", category: "Improvement" },
+                            { name: "Implementation Plans", description: "Plans for integrating new Dataplex features into the existing environment.", type: "Document", importance: "Optional", category: "Improvement" }
+                        ]},
+                        { name: "6.4 Policy Review & Updates", owner: "Data Governance Lead (DGL)", duration: "Ongoing", deliverables: [
+                            { name: "Reviewed & Updated Policies", description: "Data governance policies that have been revised to reflect changing needs.", type: "Document", importance: "Recommended", category: "Ongoing Governance" }
+                        ]}
                     ]
                 }
             ]
         };
 
         const detailsContainer = document.getElementById('phase-details-container');
+        const deliverablesSummaryContainer = document.getElementById('deliverables-summary-table-container');
         let ganttChart;
 
         // Function to render all steps in a single table
@@ -251,7 +353,9 @@
                                             <td class="p-3 pl-6">${activity.name}</td>
                                             <td class="p-3">${activity.owner}</td>
                                             <td class="p-3">${activity.duration}</td>
-                                            <td class="p-3">${activity.deliverables}</td>
+                                            <td class="p-3">
+                                                ${activity.deliverables.map(item => item.name).join('<br>')}
+                                            </td>
                                         </tr>
                                     `).join('')}
                                 `).join('')}
@@ -270,6 +374,54 @@
                 newContent.style.opacity = 1;
             });
         }
+
+        // Function to render the deliverables summary table
+        function renderDeliverablesSummaryTable() {
+            let allDeliverables = [];
+            projectData.phases.forEach(phase => {
+                phase.activities.forEach(activity => {
+                    activity.deliverables.forEach(deliverable => {
+                        allDeliverables.push({
+                            name: deliverable.name,
+                            description: deliverable.description,
+                            type: deliverable.type,
+                            activity: activity.name, // Link back to the activity
+                            importance: deliverable.importance,
+                            category: deliverable.category // Add category here
+                        });
+                    });
+                });
+            });
+
+            let tableContent = `
+                <table class="min-w-full text-sm text-left details-table">
+                    <thead class="font-semibold">
+                        <tr>
+                            <th class="p-3">Category</th>
+                            <th class="p-3">Deliverable Name</th>
+                            <th class="p-3">Description</th>
+                            <th class="p-3">Related Activity</th>
+                            <th class="p-3">Type</th>
+                            <th class="p-3">Importance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${allDeliverables.map(item => `
+                            <tr class="border-b">
+                                <td class="p-3 font-semibold">${item.category}</td>
+                                <td class="p-3">${item.name}</td>
+                                <td class="p-3">${item.description}</td>
+                                <td class="p-3">${item.activity}</td>
+                                <td class="p-3">${item.type}</td>
+                                <td class="p-3">${item.importance}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            deliverablesSummaryContainer.innerHTML = tableContent;
+        }
+
 
         document.addEventListener('DOMContentLoaded', () => {
             const ctx = document.getElementById('ganttChart').getContext('2d');
@@ -365,7 +517,8 @@
                 }
             });
             
-            // Render all steps in a single table on load
+            // Render tables on load
+            renderDeliverablesSummaryTable();
             renderAllStepsTable();
         });
     </script>
