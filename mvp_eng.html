@@ -119,15 +119,6 @@
                 </div>
             </section>
 
-            <!-- Project Deliverables Summary Section -->
-            <section class="bg-white p-4 md:p-6 rounded-lg shadow-lg mb-8">
-                <h2 class="text-2xl font-bold mb-4 text-center">Project Deliverables Summary</h2>
-                <p class="mb-4 text-stone-600 text-center">This table provides a comprehensive list of all project deliverables, their descriptions, the activities they stem from, their specific types, and their **importance** to the project.</p>
-                <div id="deliverables-summary-table-container" class="overflow-x-auto">
-                    <!-- Deliverables summary table will be rendered here by JS -->
-                </div>
-            </section>
-
             <!-- Timeline Chart Section -->
             <section class="bg-white p-4 md:p-6 rounded-lg shadow-lg mb-8">
                 <h2 class="text-2xl font-bold mb-4 text-center">Project Overview Timeline</h2>
@@ -139,6 +130,15 @@
             <!-- Detailed Project Steps Section -->
             <section id="phase-details-container">
                 <!-- All step details will be rendered here in one table -->
+            </section>
+
+            <!-- Project Deliverables Summary Section -->
+            <section class="bg-white p-4 md:p-6 rounded-lg shadow-lg mb-8">
+                <h2 class="text-2xl font-bold mb-4 text-center">Project Deliverables Summary</h2>
+                <p class="mb-4 text-stone-600 text-center">This table provides a comprehensive list of all project deliverables, their descriptions, the activities they stem from, their specific types, and their **importance** to the project.</p>
+                <div id="deliverables-summary-table-container" class="overflow-x-auto">
+                    <!-- Deliverables summary table will be rendered here by JS -->
+                </div>
             </section>
 
         </main>
@@ -518,8 +518,8 @@
             });
             
             // Render tables on load
-            renderDeliverablesSummaryTable();
             renderAllStepsTable();
+            renderDeliverablesSummaryTable(); // Render this last as it's now the last section
         });
     </script>
 </body>
