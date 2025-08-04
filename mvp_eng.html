@@ -97,10 +97,10 @@
                     color: 'rgba(56, 189, 248, 0.7)', // sky-400
                     borderColor: 'rgba(2, 132, 199, 1)', // sky-600
                     activities: [
-                        { name: "1.1 Project Kick-off & Stakeholder Alignment", owner: "Project Manager", duration: "1 Day", deliverables: "- Project Charter/Scope Document (MVP Focus)<br>- Stakeholder List<br>- Communication Plan" },
-                        { name: "1.2 Current State Assessment", owner: "Data Architect, Data Engineer", duration: "2 Days", deliverables: "- Current State Architecture Diagram (High-Level)<br>- BigQuery Entities Inventory (Summary)<br>- Gap Analysis Report (Key Gaps)<br>- Identified Core Use Cases" },
-                        { name: "1.3 Requirements Gathering", owner: "Data Governance Lead, PM, Stakeholders", duration: "1 Day", deliverables: "- Prioritized Requirements (MVP)<br>- Core Metadata Attributes List" },
-                        { name: "1.4 High-Level Architecture Design & Planning", owner: "Data Architect", duration: "1 Day", deliverables: "- High-Level Dataplex Architecture Diagram<br>- IAM Strategy (Key Roles)<br>- High-Level Project Plan (45-day)<br>- Resource Estimation (Lean)" }
+                        { name: "1.1 Project Kick-off & Stakeholder Alignment", owner: "Project Manager (PM)", duration: "1 Day", deliverables: "- Project Charter/Scope Document (MVP Focus)<br>- Stakeholder List<br>- Communication Plan" },
+                        { name: "1.2 Current State Assessment", owner: "Cloud Engineer (CE), Data Engineer (DE)", duration: "2 Days", deliverables: "- Current State Architecture Diagram (High-Level)<br>- BigQuery Entities Inventory (Summary)<br>- Gap Analysis Report (Key Gaps)<br>- Identified Core Use Cases" },
+                        { name: "1.3 Requirements Gathering", owner: "Data Governance Lead (DGL), PM, Business Stakeholders (BS)", duration: "1 Day", deliverables: "- Prioritized Requirements (MVP)<br>- Core Metadata Attributes List" },
+                        { name: "1.4 High-Level Architecture Design & Planning", owner: "Cloud Engineer (CE)", duration: "1 Day", deliverables: "- High-Level Dataplex Architecture Diagram<br>- IAM Strategy (Key Roles)<br>- High-Level Project Plan (45-day)<br>- Resource Estimation (Lean)" }
                     ]
                 },
                 {
@@ -110,12 +110,12 @@
                     color: 'rgba(251, 191, 36, 0.7)', // amber-400
                     borderColor: 'rgba(217, 119, 6, 1)', // amber-600
                     activities: [
-                        { name: "2.1 Detailed Dataplex Lake & Zone Design", owner: "Data Architect", duration: "2 Days", deliverables: "- Detailed Dataplex Lake & Zone Design Document<br>- Asset Mapping Strategy" },
-                        { name: "2.2 Asset Onboarding Strategy", owner: "Data Engineer", duration: "1 Day", deliverables: "- Asset Onboarding Plan<br>- Data Source Connection Specifications" },
-                        { name: "2.3 Metadata Management & Tagging", owner: "Data Governance Lead, Data Architect", duration: "4 Days", deliverables: "- Defined Core Tag Templates<br>- Initial Business Glossary (Key Terms)<br>- Metadata Collection Strategy<br>- Metadata Governance Guidelines (Basic)" },
-                        { name: "2.4 Data Governance & Security Policy Definition", owner: "Data Governance Lead, Cloud Security Engineer", duration: "1 Day", deliverables: "- Data Governance Policy Document (MVP)<br>- IAM Role Matrix (Core Roles)" },
-                        { name: "2.5 Data Quality Rules & Profiling", owner: "Data Engineer, Data Governance Lead", duration: "1 Day", deliverables: "- Data Quality Rule Definitions (Critical)<br>- Data Profiling Plan<br>- Alerting Strategy (Basic)" },
-                        { name: "2.6 Data Lineage & Observability", owner: "Data Architect, Data Engineer", duration: "1 Day", deliverables: "- Data Lineage Strategy (High-Level)<br>- Observability Metrics (Key Metrics)" }
+                        { name: "2.1 Detailed Dataplex Lake & Zone Design", owner: "Cloud Engineer (CE)", duration: "2 Days", deliverables: "- Detailed Dataplex Lake & Zone Design Document<br>- Asset Mapping Strategy" },
+                        { name: "2.2 Asset Onboarding Strategy", owner: "Data Engineer (DE)", duration: "1 Day", deliverables: "- Asset Onboarding Plan<br>- Data Source Connection Specifications" },
+                        { name: "2.3 Metadata Management & Tagging", owner: "Data Governance Lead (DGL), Cloud Engineer (CE)", duration: "4 Days", deliverables: "- Defined Core Tag Templates<br>- Initial Business Glossary (Key Terms)<br>- Metadata Collection Strategy<br>- Metadata Governance Guidelines (Basic)" },
+                        { name: "2.4 Data Governance & Security Policy Definition", owner: "Data Governance Lead (DGL), Cloud Security Engineer (CSE)", duration: "1 Day", deliverables: "- Data Governance Policy Document (MVP)<br>- IAM Role Matrix (Core Roles)" },
+                        { name: "2.5 Data Quality Rules & Profiling", owner: "Data Engineer (DE), Data Governance Lead (DGL)", duration: "1 Day", deliverables: "- Data Quality Rule Definitions (Critical)<br>- Data Profiling Plan<br>- Alerting Strategy (Basic)" },
+                        { name: "2.6 Data Lineage & Observability", owner: "Cloud Engineer (CE), Data Engineer (DE)", duration: "1 Day", deliverables: "- Data Lineage Strategy (High-Level)<br>- Observability Metrics (Key Metrics)" }
                     ]
                 },
                 {
@@ -125,12 +125,12 @@
                     color: 'rgba(52, 211, 153, 0.7)', // emerald-400
                     borderColor: 'rgba(5, 150, 105, 1)', // emerald-600
                     activities: [
-                        { name: "3.1 Dataplex Environment Setup", owner: "Data Engineer, Cloud Security Engineer", duration: "1 Day", deliverables: "- Configured GCP Project<br>- Deployed Dataplex Lakes & Zones<br>- Service Accounts Setup" },
-                        { name: "3.2 Asset Onboarding", owner: "Data Engineer", duration: "2 Days", deliverables: "- 60 BigQuery Tables Onboarded<br>- Verified Asset Connections" },
-                        { name: "3.3 Metadata Enrichment & Cataloging", owner: "Data Governance Lead, Data Engineer", duration: "12 Days", deliverables: "- Populated Dataplex Data Catalog (MVP)<br>- Implemented Business Glossary (Key Terms)" },
-                        { name: "3.4 Data Quality Implementation", owner: "Data Engineer", duration: "2 Days", deliverables: "- Deployed Data Quality Scans (Critical)<br>- Configured Alerting Mechanisms" },
-                        { name: "3.5 Security & Access Control Configuration", owner: "Cloud Security Engineer, Data Governance Lead", duration: "1 Day", deliverables: "- Implemented IAM Policies" },
-                        { name: "3.6 Data Exploration & Consumption Setup", owner: "Data Engineer, Data Analyst/Scientist", duration: "2 Days", deliverables: "- Configured Dataplex Exploration Environment<br>- Tested BigQuery Access via Dataplex" }
+                        { name: "3.1 Dataplex Environment Setup", owner: "Data Engineer (DE), Cloud Security Engineer (CSE)", duration: "1 Day", deliverables: "- Configured GCP Project<br>- Deployed Dataplex Lakes & Zones<br>- Service Accounts Setup" },
+                        { name: "3.2 Asset Onboarding", owner: "Data Engineer (DE)", duration: "2 Days", deliverables: "- 60 BigQuery Tables Onboarded<br>- Verified Asset Connections" },
+                        { name: "3.3 Metadata Enrichment & Cataloging", owner: "Data Governance Lead (DGL), Data Engineer (DE)", duration: "12 Days", deliverables: "- Populated Dataplex Data Catalog (MVP)<br>- Implemented Business Glossary (Key Terms)" },
+                        { name: "3.4 Data Quality Implementation", owner: "Data Engineer (DE)", duration: "2 Days", deliverables: "- Deployed Data Quality Scans (Critical)<br>- Configured Alerting Mechanisms" },
+                        { name: "3.5 Security & Access Control Configuration", owner: "Cloud Security Engineer (CSE), Data Governance Lead (DGL)", duration: "1 Day", deliverables: "- Implemented IAM Policies" },
+                        { name: "3.6 Data Exploration & Consumption Setup", owner: "Data Engineer (DE), Data Analyst/Scientist (DA/DS)", duration: "2 Days", deliverables: "- Configured Dataplex Exploration Environment<br>- Tested BigQuery Access via Dataplex" }
                     ]
                 },
                 {
@@ -140,10 +140,10 @@
                     color: 'rgba(167, 139, 250, 0.7)', // violet-400
                     borderColor: 'rgba(124, 58, 237, 1)', // violet-600
                     activities: [
-                        { name: "4.1 Functional Testing", owner: "Data Analyst/Scientist, Data Engineer", duration: "2 Days", deliverables: "- Test Cases & Results (Core Features)<br>- Bug Report (Critical Bugs)" },
-                        { name: "4.2 Performance Testing", owner: "Data Engineer", duration: "1 Day", deliverables: "- Performance Test Report (Key Metrics)<br>- Optimization Recommendations (Urgent)" },
-                        { name: "4.3 User Acceptance Testing (UAT)", owner: "Business Stakeholders, Data Governance Lead", duration: "1 Day", deliverables: "- UAT Sign-off (MVP Scope)<br>- Feedback Log & Action Plan (Prioritized)" },
-                        { name: "4.4 Documentation", owner: "Project Manager, Architects, Engineers", duration: "1 Day", deliverables: "- User Guide (Basic)<br>- Admin Guide (Basic)<br>- Architecture Documentation (High-Level)" }
+                        { name: "4.1 Functional Testing", owner: "Data Analyst/Scientist (DA/DS), Data Engineer (DE)", duration: "2 Days", deliverables: "- Test Cases & Results (Core Features)<br>- Bug Report (Critical Bugs)" },
+                        { name: "4.2 Performance Testing", owner: "Data Engineer (DE)", duration: "1 Day", deliverables: "- Performance Test Report (Key Metrics)<br>- Optimization Recommendations (Urgent)" },
+                        { name: "4.3 User Acceptance Testing (UAT)", owner: "Business Stakeholders (BS), Data Governance Lead (DGL)", duration: "1 Day", deliverables: "- UAT Sign-off (MVP Scope)<br>- Feedback Log & Action Plan (Prioritized)" },
+                        { name: "4.4 Documentation", owner: "Project Manager (PM), Cloud Engineer (CE), Data Engineer (DE)", duration: "1 Day", deliverables: "- User Guide (Basic)<br>- Admin Guide (Basic)<br>- Architecture Documentation (High-Level)" }
                     ]
                 },
                 {
@@ -153,9 +153,9 @@
                     color: 'rgba(251, 113, 133, 0.7)', // rose-400
                     borderColor: 'rgba(225, 29, 72, 1)', // rose-600
                     activities: [
-                        { name: "5.1 Production Deployment", owner: "Data Engineer, Cloud Security Engineer", duration: "2 Days", deliverables: "- Production Dataplex Environment<br>- Deployed Metadata & Governance Policies" },
-                        { name: "5.2 User Training", owner: "Data Governance Lead, Project Manager", duration: "2 Days", deliverables: "- Training Materials (Essential)<br>- Conducted Training Sessions" },
-                        { name: "5.3 Post-Launch Monitoring", owner: "Data Engineer, Data Governance Lead", duration: "1 Day", deliverables: "- Monitoring Dashboards (Initial)<br>- Initial Monitoring Report" }
+                        { name: "5.1 Production Deployment", owner: "Data Engineer (DE), Cloud Security Engineer (CSE)", duration: "2 Days", deliverables: "- Production Dataplex Environment<br>- Deployed Metadata & Governance Policies" },
+                        { name: "5.2 User Training", owner: "Data Governance Lead (DGL), Project Manager (PM)", duration: "2 Days", deliverables: "- Training Materials (Essential)<br>- Conducted Training Sessions" },
+                        { name: "5.3 Post-Launch Monitoring", owner: "Data Engineer (DE), Data Governance Lead (DGL)", duration: "1 Day", deliverables: "- Monitoring Dashboards (Initial)<br>- Initial Monitoring Report" }
                     ]
                 },
                  {
@@ -165,10 +165,10 @@
                     color: 'rgba(156, 163, 175, 0.7)', // gray-400
                     borderColor: 'rgba(75, 85, 99, 1)', // gray-600
                     activities: [
-                        { name: "6.1 Metadata Enrichment & Maintenance", owner: "Data Governance Lead, Data Engineer", duration: "Ongoing", deliverables: "- Regular Metadata Audit Reports<br>- Updated Metadata" },
-                        { name: "6.2 New Entity Onboarding", owner: "Data Engineer, Data Governance Lead", duration: "Ongoing", deliverables: "- Onboarded New Entities with Metadata" },
-                        { name: "6.3 Feature Adoption", owner: "Data Architect, Data Governance Lead", duration: "Ongoing", deliverables: "- Feature Evaluation Reports<br>- Implementation Plans" },
-                        { name: "6.4 Policy Review & Updates", owner: "Data Governance Lead", duration: "Ongoing", deliverables: "- Reviewed & Updated Policies" }
+                        { name: "6.1 Metadata Enrichment & Maintenance", owner: "Data Governance Lead (DGL), Data Engineer (DE)", duration: "Ongoing", deliverables: "- Regular Metadata Audit Reports<br>- Updated Metadata" },
+                        { name: "6.2 New Entity Onboarding", owner: "Data Engineer (DE), Data Governance Lead (DGL)", duration: "Ongoing", deliverables: "- Onboarded New Entities with Metadata" },
+                        { name: "6.3 Feature Adoption", owner: "Cloud Engineer (CE), Data Governance Lead (DGL)", duration: "Ongoing", deliverables: "- Feature Evaluation Reports<br>- Implementation Plans" },
+                        { name: "6.4 Policy Review & Updates", owner: "Data Governance Lead (DGL)", duration: "Ongoing", deliverables: "- Reviewed & Updated Policies" }
                     ]
                 }
             ]
