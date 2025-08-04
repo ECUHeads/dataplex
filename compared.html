@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เปรียบเทียบ Google Dataplex vs Microsoft Purview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Slate, Google Blue, Microsoft Teal) -->
+    <!-- Application Structure Plan: A navigation-driven SPA with distinct sections for: 1) Overview & Philosophy, 2) Core Feature Comparison (interactive), 3) Architecture & Integration (with a radar chart), 4) Pricing, and 5) Interactive Guidance. This structure deconstructs the dense report into logical, digestible modules, guiding the user from high-level concepts to specific details and finally to an actionable conclusion, which is a more intuitive flow for a data engineer than a linear report. -->
+    <!-- Visualization & Content Choices: Overview: Side-by-side cards. Features: Interactive button-driven cards for focused comparison. Integration: A Chart.js radar chart for multi-dimensional comparison of ecosystem strengths. Architecture: Simple HTML/CSS diagrams to clarify abstract concepts. Pricing: A clear HTML table. Guidance: An interactive scenario selector. This mix of text, charts, and interactive elements is chosen to maximize clarity and engagement for different types of information. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            height: 40vh;
+            width: 100%;
+            max-height: 450px;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active {
+            border-bottom-color: #3b82f6; /* blue-500 */
+            color: #1e3a8a; /* blue-900 */
+        }
+        .nav-link:hover {
+            border-bottom-color: #60a5fa; /* blue-400 */
+            color: #1e40af; /* blue-800 */
+        }
+        .feature-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .feature-btn.active {
+            background-color: #1e3a8a;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .highlight-card {
+            transition: all 0.3s ease-in-out;
+            border: 2px solid transparent;
+        }
+        .highlight-card.active {
+            border-color: #f59e0b; /* amber-500 */
+            transform: scale(1.02);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900">Google Dataplex vs. Microsoft Purview</h1>
+            <p class="text-lg text-slate-600 mt-2">คู่มือเปรียบเทียบเชิงลึกสำหรับวิศวกรข้อมูล</p>
+        </header>
+
+        <nav class="bg-white/70 backdrop-blur-md sticky top-0 z-10 shadow-sm rounded-lg mb-8">
+            <div class="flex justify-center items-center space-x-2 sm:space-x-4 md:space-x-8 p-4 overflow-x-auto">
+                <a href="#overview" class="nav-link font-semibold text-slate-700 px-3 py-2 text-sm md:text-base whitespace-nowrap">ภาพรวมและปรัชญา</a>
+                <a href="#features" class="nav-link font-semibold text-slate-700 px-3 py-2 text-sm md:text-base whitespace-nowrap">เปรียบเทียบคุณสมบัติ</a>
+                <a href="#architecture" class="nav-link font-semibold text-slate-700 px-3 py-2 text-sm md:text-base whitespace-nowrap">สถาปัตยกรรม</a>
+                <a href="#pricing" class="nav-link font-semibold text-slate-700 px-3 py-2 text-sm md:text-base whitespace-nowrap">การกำหนดราคา</a>
+                <a href="#guidance" class="nav-link font-semibold text-slate-700 px-3 py-2 text-sm md:text-base whitespace-nowrap">คำแนะนำ</a>
+            </div>
+        </nav>
+
+        <main>
+            <!-- Section: Overview & Philosophy -->
+            <section id="overview" class="content-section space-y-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-slate-900">ภาพรวมและปรัชญา</h2>
+                    <p class="mt-2 text-slate-600 max-w-3xl mx-auto">
+                        ทำความเข้าใจแนวคิดหลักและวิสัยทัศน์ที่ขับเคลื่อนแต่ละแพลตฟอร์ม ซึ่งเป็นรากฐานสำคัญในการตัดสินใจเลือกเครื่องมือที่เหมาะสมกับสถาปัตยกรรมและวัฒนธรรมข้อมูลขององค์กรคุณ
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                        <h3 class="text-2xl font-bold text-blue-800">Google Dataplex</h3>
+                        <p class="text-slate-500 font-semibold mt-1">Intelligent Data Fabric</p>
+                        <p class="mt-4 text-slate-700">
+                            มุ่งเน้นการสร้าง "Data Fabric" อัจฉริยะเพื่อรวมศูนย์การจัดการและกำกับดูแลข้อมูลทั้งหมดที่กระจัดกระจายอยู่ใน Data Lakes, Data Warehouses และ Databases ภายในระบบนิเวศของ Google Cloud เป็นหลัก โดยมีเป้าหมายเพื่อทำให้ข้อมูลสามารถค้นพบ เข้าใจ และใช้งานได้อย่างปลอดภัยและเป็นอัตโนมัติ สนับสนุนสถาปัตยกรรม **Data Mesh** อย่างเต็มรูปแบบ
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500">
+                        <h3 class="text-2xl font-bold text-teal-800">Microsoft Purview</h3>
+                        <p class="text-slate-500 font-semibold mt-1">Comprehensive Governance Portfolio</p>
+                        <p class="mt-4 text-slate-700">
+                            นำเสนอชุดโซลูชันที่ครอบคลุม (Portfolio) ซึ่งรวมการกำกับดูแลข้อมูล (Governance), ความปลอดภัย (Security) และการจัดการความเสี่ยง (Risk & Compliance) ไว้ในที่เดียว เน้นแนวคิด **Data as a Product** และ **Federated Governance** เพื่อส่งเสริมให้ข้อมูลเป็นสินทรัพย์ที่เชื่อถือได้และพร้อมใช้งานทั่วทั้งองค์กร โดยเฉพาะในระบบนิเวศของ Azure และ Microsoft 365
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Feature Comparison -->
+            <section id="features" class="content-section space-y-8 hidden">
+                 <div class="text-center">
+                    <h2 class="text-3xl font-bold text-slate-900">เปรียบเทียบคุณสมบัติหลัก</h2>
+                    <p class="mt-2 text-slate-600 max-w-3xl mx-auto">
+                        คลิกเพื่อเปรียบเทียบความสามารถหลักของแต่ละแพลตฟอร์มแบบเจาะลึก ช่วยให้คุณเห็นความแตกต่างในแต่ละมิติได้อย่างชัดเจน ตั้งแต่การจัดการ Metadata ไปจนถึง Data Lineage และความปลอดภัย
+                    </p>
+                </div>
+                <div id="feature-buttons" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                </div>
+                <div id="feature-content" class="grid md:grid-cols-2 gap-8">
+                </div>
+            </section>
+
+            <!-- Section: Architecture & Integration -->
+            <section id="architecture" class="content-section space-y-8 hidden">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-slate-900">สถาปัตยกรรมและการผสานรวม</h2>
+                    <p class="mt-2 text-slate-600 max-w-3xl mx-auto">
+                        สำรวจว่าแต่ละแพลตฟอร์มสนับสนุนสถาปัตยกรรมข้อมูลสมัยใหม่อย่างไร และมีความสามารถในการผสานรวมกับระบบนิเวศต่างๆ ได้ดีเพียงใด ซึ่งเป็นปัจจัยสำคัญสำหรับสภาพแวดล้อมแบบ Multi-cloud และ Hybrid
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                     <h3 class="text-2xl font-bold text-slate-800 text-center mb-4">ความแข็งแกร่งของระบบนิเวศ</h3>
+                    <div class="chart-container mx-auto max-w-2xl">
+                        <canvas id="integrationRadarChart"></canvas>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 mt-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-bold text-blue-800 mb-4">Dataplex: Data Mesh Enabler</h3>
+                        <p class="mb-4">Dataplex ถูกออกแบบมาเพื่อสนับสนุนหลักการ Data Mesh โดยตรงผ่านโครงสร้าง Lake, Zone และ Asset ซึ่งช่วยให้ทีมแต่ละโดเมนสามารถเป็นเจ้าของข้อมูลของตนเองได้ (Decentralized Ownership) ในขณะที่ยังคงมีการกำกับดูแลจากส่วนกลาง (Centralized Governance)</p>
+                        <div class="border rounded-lg p-4 bg-slate-50">
+                           <div class="flex items-center justify-center space-x-2">
+                                <div class="text-center p-2 border-2 border-dashed border-slate-400 rounded-lg">
+                                    <p class="font-bold">Central Governance</p>
+                                    <p class="text-sm">(Policies, Quality Rules)</p>
+                                </div>
+                           </div>
+                           <div class="flex justify-center my-2">
+                                <div class="w-px bg-slate-400 h-8"></div>
+                           </div>
+                           <div class="flex justify-around">
+                                <div class="text-center p-2 bg-blue-100 rounded-lg shadow">
+                                    <p class="font-bold">Domain A</p>
+                                    <p class="text-sm">(Data Product)</p>
+                                </div>
+                                <div class="text-center p-2 bg-blue-100 rounded-lg shadow">
+                                    <p class="font-bold">Domain B</p>
+                                    <p class="text-sm">(Data Product)</p>
+                                </div>
+                                <div class="text-center p-2 bg-blue-100 rounded-lg shadow">
+                                    <p class="font-bold">Domain C</p>
+                                    <p class="text-sm">(Data Product)</p>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-bold text-teal-800 mb-4">Purview: Data as a Product Hub</h3>
+                        <p class="mb-4">Purview เน้นแนวคิด "Data as a Product" (DaaP) และ Federated Governance โดยให้เครื่องมือแก่เจ้าของข้อมูล (Data Owners) และผู้ดูแลข้อมูล (Stewards) ในการดูแลจัดการ "ผลิตภัณฑ์ข้อมูล" ของตนเองให้มีคุณภาพ น่าเชื่อถือ และสอดคล้องกับเป้าหมายธุรกิจ</p>
+                        <div class="border rounded-lg p-4 bg-slate-50">
+                            <div class="flex items-center justify-center p-2 bg-teal-100 rounded-lg shadow-inner">
+                                <div class="text-center">
+                                    <p class="font-bold">Data Product: "Sales Report"</p>
+                                    <ul class="text-sm list-disc list-inside text-left mt-2">
+                                        <li>Owner: Sales Team</li>
+                                        <li>Quality Score: 95%</li>
+                                        <li>Lineage: Verified</li>
+                                        <li>Access: Role-based</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="flex justify-around mt-4">
+                                <div class="text-center text-sm"><span class="font-semibold">Discovery</span><br>🔍</div>
+                                <div class="text-center text-sm"><span class="font-semibold">Quality</span><br>✅</div>
+                                <div class="text-center text-sm"><span class="font-semibold">Security</span><br>🛡️</div>
+                                <div class="text-center text-sm"><span class="font-semibold">Access</span><br>🔑</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Pricing -->
+            <section id="pricing" class="content-section space-y-8 hidden">
+                 <div class="text-center">
+                    <h2 class="text-3xl font-bold text-slate-900">การเปรียบเทียบราคา</h2>
+                    <p class="mt-2 text-slate-600 max-w-3xl mx-auto">
+                        ทำความเข้าใจโครงสร้างและปัจจัยหลักที่ส่งผลต่อค่าใช้จ่ายของแต่ละแพลตฟอร์ม เพื่อให้คุณสามารถวางแผนงบประมาณและปรับใช้กลยุทธ์การเพิ่มประสิทธิภาพต้นทุนได้อย่างเหมาะสม
+                    </p>
+                </div>
+                <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="p-4 font-bold text-slate-700">ส่วนประกอบ</th>
+                                <th class="p-4 font-bold text-blue-800">Google Dataplex</th>
+                                <th class="p-4 font-bold text-teal-800">Microsoft Purview</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="p-4 font-semibold">หน่วยประมวลผลหลัก</td>
+                                <td class="p-4">
+                                    <p class="font-semibold">Data Compute Unit (DCU) ชั่วโมง</p>
+                                    <p class="text-sm text-slate-600">แยกเป็น Standard (พื้นฐาน) และ Premium (ขั้นสูง เช่น DQ, Lineage) โดย Premium มีราคาสูงกว่าและไม่มีระดับฟรี</p>
+                                </td>
+                                <td class="p-4">
+                                    <p class="font-semibold">Data Governance Processing Unit (DGPU)</p>
+                                    <p class="text-sm text-slate-600">ใช้สำหรับงานประมวลผลหนัก เช่น คุณภาพข้อมูล ค่าใช้จ่ายขึ้นอยู่กับปริมาณข้อมูลและประเภทกฎ</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-semibold">การจัดเก็บเมทาดาตา</td>
+                                <td class="p-4">
+                                    <p>เมทาดาตาทางเทคนิคฟรี</p>
+                                    <p class="text-sm text-slate-600">คิดค่าบริการสำหรับเมทาดาตาที่เสริมเข้าไป เช่น Business Glossary, Custom Aspects (มีระดับฟรีเริ่มต้น)</p>
+                                </td>
+                                <td class="p-4">
+                                    <p>คิดค่าบริการตาม Capacity Unit (CU)</p>
+                                    <p class="text-sm text-slate-600">แต่ละ CU รวมถึงพื้นที่จัดเก็บ 10 GB และรองรับปริมาณงาน 25 operation/วินาที ปรับขนาดอัตโนมัติ</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-semibold">ค่าใช้จ่ายการสแกน</td>
+                                <td class="p-4">
+                                    <p>รวมอยู่ใน DCU ของ Standard Processing</p>
+                                    <p class="text-sm text-slate-600">มีระดับฟรี 100 DCU ชั่วโมงแรกต่อเดือน</p>
+                                </td>
+                                <td class="p-4">
+                                    <p>ฟรี (ตามเงื่อนไข)</p>
+                                    <p class="text-sm text-slate-600">การสแกนเข้า Data Map ไม่ถูกคิดค่าบริการโดยตรง</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-semibold">โมเดลหลัก</td>
+                                <td class="p-4">
+                                    <p class="font-semibold">Pay-per-use (จ่ายตามการใช้งาน)</p>
+                                    <p class="text-sm text-slate-600">ต้นทุนผันแปรตามการเปิดใช้งานคุณสมบัติ Premium และความถี่ในการรันงาน</p>
+                                </td>
+                                <td class="p-4">
+                                    <p class="font-semibold">Pay-per-use + Capacity</p>
+                                    <p class="text-sm text-slate-600">ต้นทุนขึ้นอยู่กับจำนวนสินทรัพย์ที่ "อยู่ภายใต้การกำกับดูแล" และการใช้งาน DGPU</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Section: Guidance -->
+            <section id="guidance" class="content-section space-y-8 hidden">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-slate-900">สรุปและคำแนะนำในการเลือก</h2>
+                    <p class="mt-2 text-slate-600 max-w-3xl mx-auto">
+                        เลือกสถานการณ์ที่ตรงกับองค์กรของคุณมากที่สุด เพื่อรับคำแนะนำเบื้องต้นว่าแพลตฟอร์มใดอาจเหมาะสมกับความต้องการของคุณมากกว่า พร้อมเหตุผลประกอบการตัดสินใจ
+                    </p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    <button class="guidance-btn bg-white shadow hover:bg-slate-100 text-slate-800 font-bold py-2 px-4 rounded-lg" data-scenario="gcp">องค์กรเน้น GCP</button>
+                    <button class="guidance-btn bg-white shadow hover:bg-slate-100 text-slate-800 font-bold py-2 px-4 rounded-lg" data-scenario="azure">องค์กรเน้น Azure</button>
+                    <button class="guidance-btn bg-white shadow hover:bg-slate-100 text-slate-800 font-bold py-2 px-4 rounded-lg" data-scenario="hybrid">Hybrid / Multi-Cloud</button>
+                    <button class="guidance-btn bg-white shadow hover:bg-slate-100 text-slate-800 font-bold py-2 px-4 rounded-lg" data-scenario="security">เน้นความปลอดภัยสูงสุด</button>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div id="dataplex-guidance" class="highlight-card bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                        <h3 class="text-2xl font-bold text-blue-800">เลือก Google Dataplex เมื่อ...</h3>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-slate-700">
+                            <li>โครงสร้างพื้นฐานและข้อมูลส่วนใหญ่อยู่บน **Google Cloud Platform**</li>
+                            <li>ต้องการนำสถาปัตยกรรม **Data Mesh** มาใช้อย่างจริงจัง</li>
+                            <li>ให้ความสำคัญกับความสามารถของ **AI/ML** ในการค้นหาและทำความเข้าใจเมทาดาตา</li>
+                            <li>ต้องการจัดการกฎคุณภาพข้อมูลในรูปแบบ **Infrastructure-as-Code**</li>
+                        </ul>
+                    </div>
+                    <div id="purview-guidance" class="highlight-card bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500">
+                        <h3 class="text-2xl font-bold text-teal-800">เลือก Microsoft Purview เมื่อ...</h3>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-slate-700">
+                            <li>ระบบนิเวศข้อมูลผูกกับ **Microsoft Azure และ Microsoft 365** เป็นหลัก</li>
+                            <li>ต้องการโซลูชัน **ครบวงจร** ที่รวมการกำกับดูแล, ความปลอดภัย (DLP) และการปฏิบัติตามข้อกำหนด</li>
+                            <li>ต้องการผลักดันแนวคิด **Data as a Product** และการกำกับดูแลแบบ Federated</li>
+                            <li>ต้องการสแกนและจัดทำแค็ตตาล็อกแหล่งข้อมูลที่หลากหลาย (Multi-cloud, On-prem) ได้อย่างรวดเร็วในเบื้องต้น</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = {
+                features: {
+                    'เมทาดาตา & แค็ตตาล็อก': {
+                        dataplex: {
+                            title: 'Universal Catalog & AI Search',
+                            points: [
+                                'รวมเมทาดาตาทุกประเภท (Business, Technical, Runtime)',
+                                'ใช้ AI/ML ค้นหาความสัมพันธ์และข้อมูลเชิงลึก',
+                                'รองรับการค้นหาด้วยภาษาธรรมชาติ (Semantic Search)',
+                                'เน้นการผสานรวมอัตโนมัติกับบริการของ GCP'
+                            ]
+                        },
+                        purview: {
+                            title: 'Unified Data Map & Domains',
+                            points: [
+                                'Data Map รวบรวมเมทาดาตาจากแหล่งข้อมูลหลากหลาย (Hybrid, Multi-cloud)',
+                                'สแกนและจัดหมวดหมู่ข้อมูลอัตโนมัติ',
+                                'จัดระเบียบข้อมูลเป็นโดเมนและผลิตภัณฑ์ข้อมูล',
+                                'เชื่อมโยงข้อมูลกับศัพท์ทางธุรกิจ (Business Glossary)'
+                            ]
+                        }
+                    },
+                    'คุณภาพข้อมูล': {
+                        dataplex: {
+                            title: 'Data Quality as Code',
+                            points: [
+                                'กำหนดและวัดผลคุณภาพข้อมูลใน BigQuery',
+                                'ทำโปรไฟล์ข้อมูลเพื่อหาลักษณะเฉพาะโดยอัตโนมัติ',
+                                'จัดการกฎคุณภาพในรูปแบบโค้ด (YAML, SQL)',
+                                'เชื่อมโยงกฎกับมิติคุณภาพ (Completeness, Correctness)'
+                            ]
+                        },
+                        purview: {
+                            title: 'Built-in Quality Insights',
+                            points: [
+                                'ความสามารถด้านคุณภาพข้อมูลในตัวสำหรับ Data Owners',
+                                'มีแดชบอร์ดและข้อมูลเชิงลึกด้านคุณภาพอัตโนมัติ',
+                                'ตรวจสอบและแก้ไขข้อผิดพลาดด้านคุณภาพได้',
+                                'เน้นการเสริมสร้างศักยภาพให้เจ้าของข้อมูล'
+                            ]
+                        }
+                    },
+                    'สายข้อมูล (Lineage)': {
+                        dataplex: {
+                            title: 'Automated GCP Lineage',
+                            points: [
+                                'ติดตามการไหลของข้อมูลอัตโนมัติสำหรับบริการ GCP',
+                                'ขยายได้ผ่าน Data Lineage API และ OpenLineage',
+                                'แสดงผลเป็นกราฟและมุมมองแบบพาธ',
+                                '<strong class="text-red-600">ข้อจำกัดสำคัญ: เก็บข้อมูล Lineage เพียง 30 วัน</strong>'
+                            ]
+                        },
+                        purview: {
+                            title: 'End-to-End Azure Lineage',
+                            points: [
+                                'สายข้อมูลอัตโนมัติสำหรับบริการ Azure (ADF, Synapse, Power BI)',
+                                'รองรับการสร้างสายข้อมูลแบบกำหนดเองผ่าน Apache Atlas API',
+                                'ติดตามได้ทั้งระดับ Asset และระดับคอลัมน์',
+                                'ช่วยในการวิเคราะห์ผลกระทบและสาเหตุของปัญหา'
+                            ]
+                        }
+                    },
+                    'ความปลอดภัย': {
+                        dataplex: {
+                            title: 'IAM-Based Governance',
+                            points: [
+                                'การควบคุมการเข้าถึงอิงตาม Google Cloud IAM',
+                                'จัดการนโยบายการเข้าถึงข้อมูลแบบรวมศูนย์',
+                                'ผสานรวมกับ VPC Service Controls เพื่อสร้างขอบเขตความปลอดภัย',
+                                'มุ่งเน้นการกำกับดูแลการเข้าถึงข้อมูลเป็นหลัก'
+                            ]
+                        },
+                        purview: {
+                            title: 'Integrated Security & Compliance Suite',
+                            points: [
+                                'รวมโซลูชันความปลอดภัย เช่น Data Loss Prevention (DLP)',
+                                'การจัดประเภทและติดป้ายข้อมูลที่ละเอียดอ่อน (Sensitivity Labels)',
+                                'การจัดการความเสี่ยงภายใน (Insider Risk Management)',
+                                'ชุดเครื่องมือครบวงจรสำหรับการปฏิบัติตามข้อกำหนด (GDPR, HIPAA)'
+                            ]
+                        }
+                    }
+                }
+            };
+
+            const sections = document.querySelectorAll('.content-section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const featureButtonsContainer = document.getElementById('feature-buttons');
+            const featureContentContainer = document.getElementById('feature-content');
+            const guidanceButtons = document.querySelectorAll('.guidance-btn');
+
+            function showSection(targetId) {
+                sections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+                navLinks.forEach(link => {
+                    if (link.getAttribute('href') === `#${targetId}`) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    showSection(targetId);
+                    window.history.pushState(null, '', `#${targetId}`);
+                });
+            });
+
+            function renderFeatureButtons() {
+                const featureNames = Object.keys(data.features);
+                featureButtonsContainer.innerHTML = featureNames.map((name, index) => `
+                    <button class="feature-btn bg-white shadow hover:bg-slate-100 text-slate-800 font-semibold py-2 px-4 rounded-lg ${index === 0 ? 'active' : ''}" data-feature="${name}">
+                        ${name}
+                    </button>
+                `).join('');
+            }
+
+            function updateFeatureContent(featureName) {
+                const featureData = data.features[featureName];
+                if (!featureData) return;
+
+                featureContentContainer.innerHTML = `
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500 animate-fade-in">
+                        <h4 class="text-xl font-bold text-blue-800">${featureData.dataplex.title}</h4>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-slate-700">
+                            ${featureData.dataplex.points.map(point => `<li>${point}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500 animate-fade-in">
+                        <h4 class="text-xl font-bold text-teal-800">${featureData.purview.title}</h4>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-slate-700">
+                            ${featureData.purview.points.map(point => `<li>${point}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+                 document.querySelectorAll('.feature-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.feature === featureName);
+                });
+            }
+            
+            featureButtonsContainer.addEventListener('click', (e) => {
+                if(e.target.classList.contains('feature-btn')) {
+                    const featureName = e.target.dataset.feature;
+                    updateFeatureContent(featureName);
+                }
+            });
+
+            guidanceButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const scenario = button.dataset.scenario;
+                    const dataplexCard = document.getElementById('dataplex-guidance');
+                    const purviewCard = document.getElementById('purview-guidance');
+
+                    dataplexCard.classList.remove('active');
+                    purviewCard.classList.remove('active');
+
+                    if (scenario === 'gcp') {
+                        dataplexCard.classList.add('active');
+                    } else if (scenario === 'azure' || scenario === 'security') {
+                        purviewCard.classList.add('active');
+                    } else if (scenario === 'hybrid') {
+                        dataplexCard.classList.add('active');
+                        purviewCard.classList.add('active');
+                    }
+                });
+            });
+
+            function createRadarChart() {
+                const ctx = document.getElementById('integrationRadarChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Native Cloud (GCP/Azure)', 'Multi-Cloud', 'On-Premises', 'Custom Engineering Effort', 'Security Suite'],
+                        datasets: [{
+                            label: 'Google Dataplex',
+                            data: [5, 3, 3, 4, 3],
+                            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 2
+                        }, {
+                            label: 'Microsoft Purview',
+                            data: [5, 4, 4, 3, 5],
+                            backgroundColor: 'rgba(20, 184, 166, 0.2)',
+                            borderColor: 'rgba(13, 148, 136, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                pointLabels: {
+                                    font: {
+                                        size: 12,
+                                        family: "'Sarabun', sans-serif"
+                                    },
+                                    color: '#334155'
+                                },
+                                ticks: {
+                                    backdropColor: 'rgba(255, 255, 255, 0.75)',
+                                    stepSize: 1,
+                                    max: 5,
+                                    min: 0
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += context.raw;
+                                        const interpretations = [
+                                            'ความสามารถในการผสานรวมกับบริการในคลาวด์ของตนเอง',
+                                            'ความสามารถในการสแกนและเชื่อมต่อกับคลาวด์อื่น',
+                                            'การรองรับแหล่งข้อมูลที่ติดตั้งภายในองค์กร',
+                                            'ระดับความพยายามที่ต้องใช้ในการสร้าง Connector เอง (คะแนนสูง = พยายามเยอะ)',
+                                            'ความครอบคลุมของโซลูชันด้านความปลอดภัยในตัว'
+                                        ];
+                                        return [label, `(${interpretations[context.dataIndex]})`];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function initialize() {
+                const initialHash = window.location.hash.substring(1) || 'overview';
+                showSection(initialHash);
+                
+                renderFeatureButtons();
+                updateFeatureContent(Object.keys(data.features)[0]);
+                
+                createRadarChart();
+            }
+
+            initialize();
+        });
+    </script>
+</body>
+</html>
